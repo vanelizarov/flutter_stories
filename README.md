@@ -1,6 +1,6 @@
 # flutter_stories
 
-![example](logo.png)
+![example](https://raw.githubusercontent.com/vanelizarov/flutter_stories/master/logo.png)
 
 Widget that brings stories mechanism to your apps
 
@@ -17,7 +17,7 @@ Add `flutter_stories: ^0.1.0` to your `pubspec.yaml`
 
 Full version can be found in [example](https://github.com/vanelizarov/flutter_stories/tree/master/example) dir
 
-![showcase](showcase.gif)
+![showcase](https://raw.githubusercontent.com/vanelizarov/flutter_stories/master/showcase.gif)
 
 
 ## Supported gestures
