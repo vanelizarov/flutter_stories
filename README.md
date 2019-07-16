@@ -4,8 +4,6 @@
 
 Widget that brings stories mechanism to your apps
 
-TODO: gif
-
 ## Advantages:
   - Simple to use and intuitive API
   - Lightweight (~200 lines of code)
@@ -13,38 +11,20 @@ TODO: gif
 
 ## Usage
 
-```dart
-Story(
-  onFlashForward: Navigator.of(context).pop,
-  onFlashBack: Navigator.of(context).pop,
-  momentCount: 4,
-  momentDurationGetter: (idx) => Duration(seconds: 4),
-  momentBuilder: (context, idx) {
-    return Container(
-      color: CupertinoColors.destructiveRed,
-      child: Center(
-        child: Text(
-          'Moment ${idx + 1}',
-          style: TextStyle(color: CupertinoColors.white),
-        ),
-      ),
-    );
-  },
-)
-```
+Add `flutter_stories: ^0.1.0` to your `pubspec.yaml`
 
-Gives you this result:
+## Example
 
-TODO: gif
+Full version can be found in [example](https://github.com/vanelizarov/flutter_stories/tree/master/example) dir
+
+![showcase](showcase.gif)
+
 
 ## Supported gestures
 
 - Tap the right portion of the screen to switch to the next moment. You can specify `onFlashForward` callback to control app behavior in this case or when story finishes
-  TODO: gif
 - Tap the left portion of the screen to switch to the previous moment. Similar to right tap, but uses `onFlashBack`
-  TODO: gif
 - Long press (hold) the screen to hide the progress segments and pause story, release to show controls and unpause
-  TODO: gif
 
 ## API
 
