@@ -21,7 +21,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: false
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  assets:
+    - assets/1.jpg
+    - assets/2.jpg
+    - assets/3.jpg
+    - assets/4.jpg
+    - assets/5.jpg

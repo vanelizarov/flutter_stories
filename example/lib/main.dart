@@ -45,17 +45,9 @@ class _HomeState extends State<Home> {
                       onFlashForward: Navigator.of(context).pop,
                       onFlashBack: Navigator.of(context).pop,
                       momentCount: 5,
-                      momentDurationGetter: (idx) => Duration(seconds: 4),
+                      momentDurationGetter: (idx) => Duration(seconds: 1),
                       momentBuilder: (context, idx) {
-                        return Container(
-                          color: CupertinoColors.destructiveRed,
-                          child: Center(
-                            child: Text(
-                              'Moment ${idx + 1}',
-                              style: TextStyle(color: CupertinoColors.white),
-                            ),
-                          ),
-                        );
+                        return Image.asset('assets/${idx + 1}.jpg');
                       },
                     ),
                   );
