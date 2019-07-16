@@ -8,10 +8,11 @@ Widget that brings stories mechanism to your apps
   - Simple to use and intuitive API
   - Lightweight (~200 lines of code)
   - Feels familiar if you've used Instagram or Snapchat stories before
+  - Can be used with Cupertino and Material pacakges independently
 
 ## Usage
 
-Add `flutter_stories: ^0.1.0` to your `pubspec.yaml`
+Add `flutter_stories` to your `pubspec.yaml`
 
 ## Example
 
