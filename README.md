@@ -1,6 +1,6 @@
 # flutter_stories
 
-![example](https://raw.githubusercontent.com/vanelizarov/flutter_stories/master/logo.png)
+![example](logo.png)
 
 Widget that brings stories mechanism to your apps
 
