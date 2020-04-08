@@ -13,14 +13,17 @@ class App extends StatelessWidget {
   }
 }
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
+class Home extends StatelessWidget {
+  final _momentCount = 5;
+  final _momentDuration = const Duration(seconds: 5);
 
-class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    final images = List.generate(
+      _momentCount,
+      (idx) => Image.asset('assets/${idx + 1}.jpg'),
+    );
+
     return CupertinoPageScaffold(
       child: Center(
         child: Container(
@@ -45,10 +48,8 @@ class _HomeState extends State<Home> {
                       onFlashForward: Navigator.of(context).pop,
                       onFlashBack: Navigator.of(context).pop,
                       momentCount: 5,
-                      momentDurationGetter: (idx) => Duration(seconds: 1),
-                      momentBuilder: (context, idx) {
-                        return Image.asset('assets/${idx + 1}.jpg');
-                      },
+                      momentDurationGetter: (idx) => _momentDuration,
+                      momentBuilder: (context, idx) => images[idx],
                     ),
                   );
                 },

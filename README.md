@@ -8,7 +8,7 @@ Widget that brings stories mechanism to your apps
   - Simple to use and intuitive API
   - Lightweight (~200 lines of code)
   - Feels familiar if you've used Instagram or Snapchat stories before
-  - Can be used with Cupertino and Material pacakges independently
+  - Can be used with Cupertino and Material packages independently
 
 ## Usage
 
@@ -33,9 +33,9 @@ Full version can be found in [example](https://github.com/vanelizarov/flutter_st
 | ------------------------- | --------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `momentCount`             | `int`                                                           | true     | sets the number of moments in story                                                                                                             |
 | `momentDurationGetter`    | `(int index) => Duration`                                       | true     | function that must return Duration for each moment                                                                                              |
-| `momentBuilder`           | `(BuildContext context, int index) => Widget`                   | true     | builder that gets executed executed for each moment                                                                                             |
-| `onFlashForward`          | `() => void`                                                    | true     | gets executed when user taps the right portion of the screen on the last moment in story or when story finishes playing                         |
-| `onFlashBack`             | `() => void`                                                    | true     | gets executed when user taps the left portion of the screen on the first moment in story                                                        |
+| `momentBuilder`           | `(BuildContext context, int index) => Widget`                   | true     | builder that gets executed for each moment                                                                                                      |
+| `onFlashForward`          | `() => void`                                                    | false    | gets executed when user taps the right portion of the screen on the last moment in story or when story finishes playing                         |
+| `onFlashBack`             | `() => void`                                                    | false    | gets executed when user taps the left portion of the screen on the first moment in story                                                        |
 | `startAt`                 | `int`                                                           | false    | sets the index of the first moment that will be displayed. defaults to `0`                                                                      |
 | `momentSwitcherFraction`  | `double`                                                        | false    | defaults to `0.33`. sets the ratio of left and right tappable portions of the screen: left for switching back, right for switching forward      |
 | `progressSegmentBuilder`  | `(BuildContext context, double progress, double gap) => Widget` | false    | defaults to `Story.instagramProgressSegmentBuilder`. builder for each progress segment. defaults to Instagram-like minimalistic segment builder |
