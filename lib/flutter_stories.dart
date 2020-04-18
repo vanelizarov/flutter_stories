@@ -1,5 +1,6 @@
 library flutter_stories;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,6 +26,7 @@ typedef Widget ProgressSegmentBuilder(
 /// Story(
 ///   onFlashForward: Navigator.of(context).pop,
 ///   onFlashBack: Navigator.of(context).pop,
+///   onClose: Navigator.of(context).pop,
 ///   momentCount: 4,
 ///   momentDurationGetter: (idx) => Duration(seconds: 4),
 ///   momentBuilder: (context, idx) {
@@ -49,6 +51,7 @@ class Story extends StatefulWidget {
     this.momentCount,
     this.onFlashForward,
     this.onFlashBack,
+    this.onClose,
     this.progressSegmentBuilder = Story.instagramProgressSegmentBuilder,
     this.progressSegmentGap = 2.0,
     this.progressOpacityDuration = const Duration(milliseconds: 300),
@@ -96,6 +99,12 @@ class Story extends StatefulWidget {
   /// of the screen on the first moment in story
   ///
   final VoidCallback onFlashBack;
+
+  ///
+  /// Shows a close button at the right of screen below progress bar
+  /// and executes the callback when user taps on the close icon.
+  ///
+  final VoidCallback onClose;
 
   ///
   /// Sets the ratio of left and right tappable portions
@@ -150,6 +159,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   int _currentIdx;
   bool _isInFullscreenMode = false;
+  bool displayCloseIcon = false;
 
   void _switchToNextOrFinish() {
     _controller.stop();
@@ -204,6 +214,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
+    displayCloseIcon = widget.onClose != null;
 
     _currentIdx = widget.startAt;
 
@@ -220,6 +231,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
 
     super.initState();
   }
+
 
   @override
   void dispose() {
@@ -289,6 +301,21 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
             onTapUp: _onTapUp,
             onLongPress: _onLongPress,
             onLongPressUp: _onLongPressEnd,
+          ),
+        ),
+        if(displayCloseIcon)
+        Positioned(
+          right: 20,
+          top: topOffset + 8.0,
+          child: GestureDetector(
+            onTap: () {
+              widget.onClose();
+            },
+            child: Icon(
+              Icons.close,
+              color: Color(0xffffffff),
+              size: 30,
+            ),
           ),
         ),
       ],

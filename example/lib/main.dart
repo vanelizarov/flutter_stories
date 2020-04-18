@@ -47,6 +47,7 @@ class Home extends StatelessWidget {
                     child: Story(
                       onFlashForward: Navigator.of(context).pop,
                       onFlashBack: Navigator.of(context).pop,
+                      onClose: Navigator.of(context).pop,
                       momentCount: 5,
                       momentDurationGetter: (idx) => _momentDuration,
                       momentBuilder: (context, idx) => images[idx],
