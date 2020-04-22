@@ -55,6 +55,7 @@ class Story extends StatefulWidget {
     this.momentSwitcherFraction = 0.33,
     this.startAt = 0,
     this.topOffset,
+    this.fullscreen,
   })  : assert(momentCount != null),
         assert(momentCount > 0),
         assert(momentDurationGetter != null),
