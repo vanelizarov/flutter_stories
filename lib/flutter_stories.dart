@@ -54,6 +54,7 @@ class Story extends StatefulWidget {
     this.progressOpacityDuration = const Duration(milliseconds: 300),
     this.momentSwitcherFraction = 0.33,
     this.startAt = 0,
+    this.topOffset,
   })  : assert(momentCount != null),
         assert(momentCount > 0),
         assert(momentDurationGetter != null),
@@ -123,6 +124,16 @@ class Story extends StatefulWidget {
   /// Sets the index of the first moment that will be displayed
   ///
   final int startAt;
+
+  ///
+  /// Controls progress segments's container oofset from top of the screen
+  ///
+  final double topOffset;
+
+  ///
+  /// Controls fullscreen behavior
+  ///
+  final bool fullscreen;
 
   static Widget instagramProgressSegmentBuilder(
           BuildContext context, int index, double progress, double gap) =>
@@ -201,9 +212,15 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
     _controller.forward();
   }
 
+  Future<void> _hideStatusBar() => SystemChrome.setEnabledSystemUIOverlays([]);
+  Future<void> _showStatusBar() =>
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    if (widget.fullscreen) {
+      _hideStatusBar();
+    }
 
     _currentIdx = widget.startAt;
 
@@ -222,16 +239,28 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
   }
 
   @override
+  void didUpdateWidget(Story oldWidget) {
+    if (widget.fullscreen != oldWidget.fullscreen) {
+      if (widget.fullscreen) {
+        _hideStatusBar();
+      } else {
+        _showStatusBar();
+      }
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    if (widget.fullscreen) {
+      _showStatusBar();
+    }
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final topOffset = MediaQuery.of(context).padding.top;
-
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -242,7 +271,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
               : widget.momentCount - 1,
         ),
         Positioned(
-          top: topOffset,
+          top: widget.topOffset ?? MediaQuery.of(context).padding.top,
           left: 8.0 - widget.progressSegmentGap / 2,
           right: 8.0 - widget.progressSegmentGap / 2,
           child: AnimatedOpacity(

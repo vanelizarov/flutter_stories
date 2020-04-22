@@ -1,3 +1,8 @@
+## [0.2.0] - 22.04.2020
+
+- Added `topOffset` param to control progress container offset from top of the screen
+- Added `fullscreen` param to control fullscreen behavior
+  
 ## [0.1.1] - 08.04.2020
 
 - `onFlashForward` and `onFlashBack` params are now optional
