@@ -1,3 +1,7 @@
+## [0.2.1] - 22.04.2020
+
+- Fixed `fullscreen` param initalization
+
 ## [0.2.0] - 22.04.2020
 
 - Added `topOffset` param to control progress container offset from top of the screen
