@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 /// Callback function that accepts the index of moment and
 /// returns its' Duration
 ///
-typedef Duration MomentDurationGetter(int index);
+typedef Duration MomentDurationGetter(int? index);
 
 ///
 /// Builder function that accepts current build context, moment index,
@@ -43,10 +43,10 @@ typedef Widget ProgressSegmentBuilder(
 ///
 class Story extends StatefulWidget {
   const Story({
-    Key key,
-    this.momentBuilder,
-    this.momentDurationGetter,
-    this.momentCount,
+    Key? key,
+    required this.momentBuilder,
+    required this.momentDurationGetter,
+    required this.momentCount,
     this.onFlashForward,
     this.onFlashBack,
     this.progressSegmentBuilder = Story.instagramProgressSegmentBuilder,
@@ -92,13 +92,13 @@ class Story extends StatefulWidget {
   /// Gets executed when user taps the right portion of the screen
   /// on the last moment in story or when story finishes playing
   ///
-  final VoidCallback onFlashForward;
+  final VoidCallback? onFlashForward;
 
   ///
   /// Gets executed when user taps the left portion
   /// of the screen on the first moment in story
   ///
-  final VoidCallback onFlashBack;
+  final VoidCallback? onFlashBack;
 
   ///
   /// Sets the ratio of left and right tappable portions
@@ -130,7 +130,7 @@ class Story extends StatefulWidget {
   ///
   /// Controls progress segments's container oofset from top of the screen
   ///
-  final double topOffset;
+  final double? topOffset;
 
   ///
   /// Controls fullscreen behavior
@@ -160,16 +160,16 @@ class Story extends StatefulWidget {
 }
 
 class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  int _currentIdx;
+  late AnimationController _controller;
+  int? _currentIdx;
   bool _isInFullscreenMode = false;
 
   void _switchToNextOrFinish() {
     _controller.stop();
-    if (_currentIdx + 1 >= widget.momentCount &&
+    if (_currentIdx! + 1 >= widget.momentCount &&
         widget.onFlashForward != null) {
-      widget.onFlashForward();
-    } else if (_currentIdx + 1 < widget.momentCount) {
+      widget.onFlashForward!();
+    } else if (_currentIdx! + 1 < widget.momentCount) {
       _controller.reset();
       setState(() => _currentIdx += 1);
       _controller.duration = widget.momentDurationGetter(_currentIdx);
@@ -181,11 +181,11 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
 
   void _switchToPrevOrFinish() {
     _controller.stop();
-    if (_currentIdx - 1 < 0 && widget.onFlashBack != null) {
-      widget.onFlashBack();
+    if (_currentIdx! - 1 < 0 && widget.onFlashBack != null) {
+      widget.onFlashBack!();
     } else {
       _controller.reset();
-      if (_currentIdx - 1 >= 0) {
+      if (_currentIdx! - 1 >= 0) {
         setState(() => _currentIdx -= 1);
       }
       _controller.duration = widget.momentDurationGetter(_currentIdx);
@@ -268,8 +268,8 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
       children: <Widget>[
         widget.momentBuilder(
           context,
-          _currentIdx < widget.momentCount
-              ? _currentIdx
+          _currentIdx! < widget.momentCount
+              ? _currentIdx!
               : widget.momentCount - 1,
         ),
         Positioned(
@@ -300,7 +300,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
                           : widget.progressSegmentBuilder(
                               context,
                               idx,
-                              idx < _currentIdx ? 1.0 : 0.0,
+                              idx < _currentIdx! ? 1.0 : 0.0,
                               widget.progressSegmentGap,
                             ),
                     );
