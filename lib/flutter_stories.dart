@@ -56,20 +56,28 @@ class Story extends StatefulWidget {
     this.startAt = 0,
     this.topOffset,
     this.fullscreen = true,
+  // ignore: unnecessary_null_comparison
   })  : assert(momentCount != null),
         assert(momentCount > 0),
+        // ignore: unnecessary_null_comparison
         assert(momentDurationGetter != null),
+        // ignore: unnecessary_null_comparison
         assert(momentBuilder != null),
+        // ignore: unnecessary_null_comparison
         assert(momentSwitcherFraction != null),
         assert(momentSwitcherFraction >= 0),
         assert(momentSwitcherFraction < double.infinity),
+        // ignore: unnecessary_null_comparison
         assert(progressSegmentGap != null),
         assert(progressSegmentGap >= 0),
+        // ignore: unnecessary_null_comparison
         assert(progressOpacityDuration != null),
         assert(momentSwitcherFraction < double.infinity),
+        // ignore: unnecessary_null_comparison
         assert(startAt != null),
         assert(startAt >= 0),
         assert(startAt < momentCount),
+        // ignore: unnecessary_null_comparison
         assert(fullscreen != null),
         super(key: key);
 
@@ -161,15 +169,15 @@ class Story extends StatefulWidget {
 
 class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  int? _currentIdx;
+  int _currentIdx = 1;
   bool _isInFullscreenMode = false;
 
   void _switchToNextOrFinish() {
     _controller.stop();
-    if (_currentIdx! + 1 >= widget.momentCount &&
+    if (_currentIdx + 1 >= widget.momentCount &&
         widget.onFlashForward != null) {
       widget.onFlashForward!();
-    } else if (_currentIdx! + 1 < widget.momentCount) {
+    } else if (_currentIdx + 1 < widget.momentCount) {
       _controller.reset();
       setState(() => _currentIdx += 1);
       _controller.duration = widget.momentDurationGetter(_currentIdx);
@@ -181,11 +189,11 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
 
   void _switchToPrevOrFinish() {
     _controller.stop();
-    if (_currentIdx! - 1 < 0 && widget.onFlashBack != null) {
+    if (_currentIdx - 1 < 0 && widget.onFlashBack != null) {
       widget.onFlashBack!();
     } else {
       _controller.reset();
-      if (_currentIdx! - 1 >= 0) {
+      if (_currentIdx - 1 >= 0) {
         setState(() => _currentIdx -= 1);
       }
       _controller.duration = widget.momentDurationGetter(_currentIdx);
@@ -214,9 +222,9 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
     _controller.forward();
   }
 
-  Future<void> _hideStatusBar() => SystemChrome.setEnabledSystemUIOverlays([]);
+  Future<void> _hideStatusBar() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   Future<void> _showStatusBar() =>
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
 
   @override
   void initState() {
@@ -268,8 +276,8 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
       children: <Widget>[
         widget.momentBuilder(
           context,
-          _currentIdx! < widget.momentCount
-              ? _currentIdx!
+          _currentIdx < widget.momentCount
+              ? _currentIdx
               : widget.momentCount - 1,
         ),
         Positioned(
@@ -300,7 +308,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
                           : widget.progressSegmentBuilder(
                               context,
                               idx,
-                              idx < _currentIdx! ? 1.0 : 0.0,
+                              idx < _currentIdx ? 1.0 : 0.0,
                               widget.progressSegmentGap,
                             ),
                     );
