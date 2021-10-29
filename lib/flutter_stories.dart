@@ -56,29 +56,13 @@ class Story extends StatefulWidget {
     this.startAt = 0,
     this.topOffset,
     this.fullscreen = true,
-  // ignore: unnecessary_null_comparison
-  })  : assert(momentCount != null),
-        assert(momentCount > 0),
-        // ignore: unnecessary_null_comparison
-        assert(momentDurationGetter != null),
-        // ignore: unnecessary_null_comparison
-        assert(momentBuilder != null),
-        // ignore: unnecessary_null_comparison
-        assert(momentSwitcherFraction != null),
+  })  : assert(momentCount > 0),
         assert(momentSwitcherFraction >= 0),
         assert(momentSwitcherFraction < double.infinity),
-        // ignore: unnecessary_null_comparison
-        assert(progressSegmentGap != null),
         assert(progressSegmentGap >= 0),
-        // ignore: unnecessary_null_comparison
-        assert(progressOpacityDuration != null),
         assert(momentSwitcherFraction < double.infinity),
-        // ignore: unnecessary_null_comparison
-        assert(startAt != null),
         assert(startAt >= 0),
         assert(startAt < momentCount),
-        // ignore: unnecessary_null_comparison
-        assert(fullscreen != null),
         super(key: key);
 
   ///
@@ -169,7 +153,7 @@ class Story extends StatefulWidget {
 
 class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  int _currentIdx = 1;
+  late int _currentIdx;
   bool _isInFullscreenMode = false;
 
   void _switchToNextOrFinish() {
@@ -222,9 +206,11 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
     _controller.forward();
   }
 
-  Future<void> _hideStatusBar() => SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  Future<void> _hideStatusBar() =>
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   Future<void> _showStatusBar() =>
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          overlays: SystemUiOverlay.values);
 
   @override
   void initState() {

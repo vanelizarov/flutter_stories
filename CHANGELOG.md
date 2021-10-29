@@ -1,3 +1,7 @@
+## [0.3.1] - 29.10.2021
+
+- Fixed [#7](https://github.com/vanelizarov/flutter_stories/issues/7), [#8](https://github.com/vanelizarov/flutter_stories/issues/8), [#10](https://github.com/vanelizarov/flutter_stories/issues/10) (thanks @Jagmohanrai)
+
 ## [0.3.0] - 07.08.2021
 
 - Null-safety support (thanks @KarimAbdo)
