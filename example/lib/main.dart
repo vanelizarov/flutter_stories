@@ -69,8 +69,7 @@ class _HomeState extends State<Home> {
                   );
                 },
               );
-              await Future.delayed(Duration(seconds: 1));
-              print('After a second');
+              await Future.delayed(const Duration(seconds: 1));
               _controller.play();
             },
             child: Container(
