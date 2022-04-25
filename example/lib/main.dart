@@ -1,20 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_stories/flutter_stories.dart';
+import 'package:flutter_stories/story_controller.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return const CupertinoApp(
       debugShowCheckedModeBanner: false,
       home: Home(),
     );
   }
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final _momentCount = 5;
+
   final _momentDuration = const Duration(seconds: 5);
 
   @override
@@ -39,21 +50,28 @@ class Home extends StatelessWidget {
           height: 64.0,
           padding: const EdgeInsets.all(2.0),
           child: GestureDetector(
-            onTap: () {
+            onTap: () async {
+              final _controller = StoryController(
+                onFlashForward: Navigator.of(context).pop,
+                onFlashBack: Navigator.of(context).pop,
+                momentCount: 3,
+                momentDurationGetter: (idx) => _momentDuration,
+                isPlayingAtStart: false,
+              );
               showCupertinoDialog(
                 context: context,
                 builder: (context) {
                   return CupertinoPageScaffold(
                     child: Story(
-                      onFlashForward: Navigator.of(context).pop,
-                      onFlashBack: Navigator.of(context).pop,
-                      momentCount: 5,
-                      momentDurationGetter: (idx) => _momentDuration,
+                      controller: _controller,
                       momentBuilder: (context, idx) => images[idx],
                     ),
                   );
                 },
               );
+              await Future.delayed(Duration(seconds: 1));
+              print('After a second');
+              _controller.play();
             },
             child: Container(
               decoration: BoxDecoration(
