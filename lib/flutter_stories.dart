@@ -2,6 +2,7 @@ library flutter_stories;
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_stories/story_controller.dart';
 
 ///
 /// Callback function that accepts the index of moment and
@@ -45,52 +46,25 @@ class Story extends StatefulWidget {
   const Story({
     Key? key,
     required this.momentBuilder,
-    required this.momentDurationGetter,
-    required this.momentCount,
-    this.onFlashForward,
-    this.onFlashBack,
+    required this.controller,
     this.progressSegmentBuilder = Story.instagramProgressSegmentBuilder,
     this.progressSegmentGap = 2.0,
     this.progressOpacityDuration = const Duration(milliseconds: 300),
     this.momentSwitcherFraction = 0.33,
-    this.startAt = 0,
     this.topOffset,
     this.fullscreen = true,
-  })  : assert(momentCount > 0),
-        assert(momentSwitcherFraction >= 0),
+  })  : assert(momentSwitcherFraction >= 0),
         assert(momentSwitcherFraction < double.infinity),
         assert(progressSegmentGap >= 0),
         assert(momentSwitcherFraction < double.infinity),
-        assert(startAt >= 0),
-        assert(startAt < momentCount),
         super(key: key);
+
+  final StoryController controller;
 
   ///
   /// Builder that gets executed executed for each moment
   ///
   final IndexedWidgetBuilder momentBuilder;
-
-  ///
-  /// Function that must return Duration for each moment
-  ///
-  final MomentDurationGetter momentDurationGetter;
-
-  ///
-  /// Sets the number of moments in story
-  ///
-  final int momentCount;
-
-  ///
-  /// Gets executed when user taps the right portion of the screen
-  /// on the last moment in story or when story finishes playing
-  ///
-  final VoidCallback? onFlashForward;
-
-  ///
-  /// Gets executed when user taps the left portion
-  /// of the screen on the first moment in story
-  ///
-  final VoidCallback? onFlashBack;
 
   ///
   /// Sets the ratio of left and right tappable portions
@@ -113,11 +87,6 @@ class Story extends StatefulWidget {
   /// Sets the duration for the progress bar show/hide animation
   ///
   final Duration progressOpacityDuration;
-
-  ///
-  /// Sets the index of the first moment that will be displayed
-  ///
-  final int startAt;
 
   ///
   /// Controls progress segments's container oofset from top of the screen
@@ -152,58 +121,34 @@ class Story extends StatefulWidget {
 }
 
 class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late int _currentIdx;
   bool _isInFullscreenMode = false;
 
-  void _switchToNextOrFinish() {
-    _controller.stop();
-    if (_currentIdx + 1 >= widget.momentCount &&
-        widget.onFlashForward != null) {
-      widget.onFlashForward!();
-    } else if (_currentIdx + 1 < widget.momentCount) {
-      _controller.reset();
-      setState(() => _currentIdx += 1);
-      _controller.duration = widget.momentDurationGetter(_currentIdx);
-      _controller.forward();
-    } else if (_currentIdx == widget.momentCount - 1) {
-      setState(() => _currentIdx = widget.momentCount);
-    }
+  void _onTapDown(TapDownDetails details) {
+    print('Tap down');
+    widget.controller.pause();
   }
-
-  void _switchToPrevOrFinish() {
-    _controller.stop();
-    if (_currentIdx - 1 < 0 && widget.onFlashBack != null) {
-      widget.onFlashBack!();
-    } else {
-      _controller.reset();
-      if (_currentIdx - 1 >= 0) {
-        setState(() => _currentIdx -= 1);
-      }
-      _controller.duration = widget.momentDurationGetter(_currentIdx);
-      _controller.forward();
-    }
-  }
-
-  void _onTapDown(TapDownDetails details) => _controller.stop();
 
   void _onTapUp(TapUpDetails details) {
+    print('Tap up');
+    widget.controller.pause();
     final width = MediaQuery.of(context).size.width;
     if (details.localPosition.dx < width * widget.momentSwitcherFraction) {
-      _switchToPrevOrFinish();
+      widget.controller.previous();
     } else {
-      _switchToNextOrFinish();
+      widget.controller.next();
     }
   }
 
   void _onLongPress() {
-    _controller.stop();
+    print('Long press');
+    widget.controller.pause();
     setState(() => _isInFullscreenMode = true);
   }
 
   void _onLongPressEnd() {
+    print('Long press end');
     setState(() => _isInFullscreenMode = false);
-    _controller.forward();
+    widget.controller.play();
   }
 
   Future<void> _hideStatusBar() =>
@@ -218,18 +163,10 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
       _hideStatusBar();
     }
 
-    _currentIdx = widget.startAt;
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.momentDurationGetter(_currentIdx),
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _switchToNextOrFinish();
-        }
-      });
-
-    _controller.forward();
+    widget.controller.initAnimationController(this);
+    widget.controller.addListener(() {
+      setState(() {});
+    });
 
     super.initState();
   }
@@ -251,7 +188,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
     if (widget.fullscreen) {
       _showStatusBar();
     }
-    _controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   }
 
@@ -262,9 +199,9 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
       children: <Widget>[
         widget.momentBuilder(
           context,
-          _currentIdx < widget.momentCount
-              ? _currentIdx
-              : widget.momentCount - 1,
+          widget.controller.currentIdx < widget.controller.momentCount
+              ? widget.controller.currentIdx
+              : widget.controller.momentCount - 1,
         ),
         Positioned(
           top: widget.topOffset ?? MediaQuery.of(context).padding.top,
@@ -276,17 +213,17 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
             child: Row(
               children: <Widget>[
                 ...List.generate(
-                  widget.momentCount,
+                  widget.controller.momentCount,
                   (idx) {
                     return Expanded(
-                      child: idx == _currentIdx
+                      child: idx == widget.controller.currentIdx
                           ? AnimatedBuilder(
-                              animation: _controller,
+                              animation: widget.controller.animationController!,
                               builder: (context, _) {
                                 return widget.progressSegmentBuilder(
                                   context,
                                   idx,
-                                  _controller.value,
+                                  widget.controller.animationController!.value,
                                   widget.progressSegmentGap,
                                 );
                               },
@@ -294,7 +231,7 @@ class _StoryState extends State<Story> with SingleTickerProviderStateMixin {
                           : widget.progressSegmentBuilder(
                               context,
                               idx,
-                              idx < _currentIdx ? 1.0 : 0.0,
+                              idx < widget.controller.currentIdx ? 1.0 : 0.0,
                               widget.progressSegmentGap,
                             ),
                     );
